@@ -1,0 +1,148 @@
+
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+      layout:decorate="~{layout}" >
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/CSS2/stylesForm.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    </head>
+    <body layout:fragment="body">
+        <div class="container">
+            <h1>Registro de un nuevo crédito</h1>
+            <p>A continuación llena los siguientes campos del formulario.</p>
+            <form id="form" th:action="@{/Creditos/form}" method="post" th:object="${Credito}">
+                <input type="hidden" id="idCred" th:field="*{id}">
+                <label for="nombreClient">Nombre del Cliente</label>
+                <input type="text" id="nombreClient" th:field="*{cliente}" onchange="validarNombre(event)">
+                <div id="msn_error"></div>
+                <br>
+                <label for="montoCred">Monto del crédito</label>
+                <input type="text" id="montoCred" th:field="*{monto}"  th:value="${monto != 0.0 ? monto : ''}" onchange="validarMonto(event)">
+                <div id="msn_error1"></div>
+                <br>
+                <label for="interesCred">Taza de Interés</label>
+                <input type="text" id="interesCred" th:field="*{tasa_interes}" onchange="validarInteres(event)">
+                <div id="msn_error2"></div>
+                <br>
+                <label for="plazoCred">Plazo</label>
+                <input type="text" id="plazoCred" th:field="*{plazo}" onchange="validarPlazo(event)">
+                <div id="msn_error3"></div>
+                <br>
+                <label for="fechaOCred">Fecha en la que se otorgo el crédito</label>
+                <input type="date" id="fechaOCred" th:field="*{fecha_otorgamiento}" max="2025-04-16">
+
+                <br>
+                <button class="button" type="submit">Enviar</button>
+            </form>
+        </div>
+
+        <script>
+
+            function validarNombre(event) {
+                let valor = event.target.value;
+
+                let regex = new RegExp("^[A-Za-zÁÉÍÓÚáéíóú\\s]+$");
+
+                if (regex.test(valor)) {
+
+                    $("#nombreClient").addClass("correct").removeClass("error");
+                    $("#msn_error").text("");
+                } else {
+                    $("#nombreClient").removeClass("correct").addClass("error");
+                    $("#msn_error").text("Este campo solo puede ser llenado con letras.");
+
+                }
+            }
+
+            function validarMonto(event) {
+                let valor = event.target.value;
+
+                let regex = new RegExp("^[0-9.]+$");
+
+                if (regex.test(valor)) {
+
+                    $("#montoCred").addClass("correct").removeClass("error");
+                    $("#msn_error1").text("");
+                } else {
+                    $("#montoCred").removeClass("correct").addClass("error");
+                    $("#msn_error1").text("Este campo solo puede ser llenado con números");
+
+                }
+            }
+
+            function validarInteres(event) {
+                let valor = event.target.value;
+
+                let regex = new RegExp("^[0-9.]+$");
+
+                if (regex.test(valor)) {
+
+                    $("#interesCred").addClass("correct").removeClass("error");
+                    $("#msn_error2").text("");
+                } else {
+                    $("#interesCred").removeClass("correct").addClass("error");
+                    $("#msn_error2").text("Este campo solo puede ser llenado con números.");
+
+                }
+            }
+
+            function validarPlazo(event) {
+                let valor = event.target.value;
+
+                let regex = new RegExp("^[0-9]+$");
+
+                if (regex.test(valor)) {
+
+                    $("#plazoCred").addClass("correct").removeClass("error");
+                    $("#msn_error3").text("");
+                } else {
+                    $("#plazoCred").removeClass("correct").addClass("error");
+                    $("#msn_error3").text("Este campo solo puede ser llenado con números.");
+                }
+            }
+            
+            $(document).ready(function(){
+                $("#form").submit(function(event){
+                    
+                    event.preventDefault();
+                    
+                    let messageError = "";
+                    let nombre = $("#nombreClient").val().trim();
+                    let monto = $("#montoCred").val().trim();
+                    let tasa = $("#interesCred").val().trim();
+                    let plazo = $("#plazoCred").val().trim();
+                    
+                    
+                    if(nombre === ""){
+                        messageError += "El campo no puede ir vacio.";
+                    }
+                    if(monto === ""){
+                        messageError += "El campo no puede ir vaco.";
+                    }
+                    if(tasa === ""){
+                        messageError += "El campo no puede ir vaco.";
+                    }
+                    if(plazo === ""){
+                        messageError += "El campo no puede ir vaco.";
+                    }
+                    
+                    $("#msn_error").text(nombre === "" ? "El campo no puede ir vacio." : "");
+                    $("#msn_error1").text(monto === "" ? "El campo no puede ir vacio." : "");
+                    $("#msn_error2").text(tasa === "" ? "El campo no puede ir vacio." : "");
+                    $("#msn_error3").text(plazo === "" ? "El campo no puede ir vacio." : "");
+                    
+                    if(messageError === ""){
+                        this.submit();
+                    }
+                });
+                
+                
+            });
+            
+
+
+        </script>
+    </body>
+</html>

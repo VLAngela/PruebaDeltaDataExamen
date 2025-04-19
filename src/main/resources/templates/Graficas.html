@@ -1,0 +1,90 @@
+
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/CSS2/stylesGraficas.css">
+    </head>
+    <body layout:fragment="body">
+        <div class="container">
+            <h1>Gráficas</h1>
+            <div class="grafics">
+
+                <div>
+                    <h3>Cantidad de cráditos Otorgados</h3>
+                    <h4>Descripción</h4>
+                    <p>El siguiente gráfico muestra la cantidad de créditos que se han otorgado en totaly por mes.</p>
+                    <canvas id="grafica" width="500" height="200"></canvas>
+                </div>
+
+
+            </div>
+        </div>
+
+        <script>
+            fetch("http://localhost:8080/Creditos/TotalCreditos")
+        .then(response => response.json())
+        .then(data => {
+            console.log('Valor recibido del backend:', data.objects);
+            mostrarGrafica(data.objects);
+        })
+        .catch(error => console.error('Error:', error));
+
+    function mostrarGrafica(datos) {
+       
+        const labels = datos.map(item => item.mes);
+        const valores = datos.map(item => item.totalCreditos);
+
+        
+        const colores = datos.map(item => 
+            item.mes === "TOTAL" ? "rgba(255, 99, 132, 0.7)" : "rgba(54, 162, 235, 0.7)"
+        );
+
+        const ctx = document.getElementById("grafica").getContext("2d");
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Total de Créditos',
+                    data: valores,
+                    backgroundColor: colores,
+                    borderColor: colores.map(c => c.replace("0.7", "1")),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Cantidad de Créditos'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Mes'
+                        }
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Créditos Otorgados por Mes'
+                    },
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    }
+        </script>
+    </body>
+</html>

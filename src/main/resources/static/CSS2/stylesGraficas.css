@@ -1,0 +1,43 @@
+
+.container{
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    top: 5rem;
+}
+
+.container h1{
+    font-size: 3rem;
+}
+
+
+.grafics{
+    padding: 15px;
+    width: 80%;
+}
+
+.grafics h3{
+    font-size: 2rem;
+    color: #2A41B5;
+}
+
+.grafics h4{
+    font-size: 1.5rem;
+    color: #0A0047;
+}
+
+.grafics p{
+    font-size: 28px;
+    
+}
+
+#grafica{
+    background: white;
+    padding: 15px;
+    margin: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
