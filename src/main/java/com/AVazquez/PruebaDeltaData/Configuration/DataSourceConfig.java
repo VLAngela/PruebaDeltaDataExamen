@@ -27,8 +27,8 @@ public class DataSourceConfig {
     dataSource.setDriverClassName("oracle.jdbc.OracleDriver");
     
     dataSource.setUrl("jdbc:oracle:thin:@localhost:1521:orcl");
-    dataSource.setUsername("AVazquezPruebaDeltaData");
-    dataSource.setPassword("password1");
+    dataSource.setUsername("");
+    dataSource.setPassword("");
     
     return dataSource;
     }
