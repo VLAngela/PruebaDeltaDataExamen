@@ -1,0 +1,62 @@
+create or replace NONEDITIONABLE FUNCTION obtener_creditos_por_mes
+RETURN SYS_REFCURSOR
+IS
+    resultado SYS_REFCURSOR;
+BEGIN
+    OPEN resultado FOR
+        SELECT 
+            TO_CHAR(TO_DATE(fecha_otorgamiento, 'YYYY-MM-DD'), 'MM') AS mes,
+            COUNT(*) AS total_creditos
+        FROM 
+            creditos 
+        WHERE 
+            fecha_otorgamiento IS NOT NULL 
+        GROUP BY 
+            TO_CHAR(TO_DATE(fecha_otorgamiento, 'YYYY-MM-DD'), 'MM')
+
+        UNION ALL
+
+        SELECT 
+            'TOTAL' AS mes,
+            COUNT(*) AS total_creditos
+        FROM 
+            creditos 
+        WHERE 
+            fecha_otorgamiento IS NOT NULL
+
+        ORDER BY mes;
+
+    RETURN resultado;
+END obtener_creditos_por_mes;
+
+---------------------------------------------------------------------///
+create or replace NONEDITIONABLE function creditos_por_rango
+RETURN SYS_REFCURSOR
+Is resultado SYS_REFCURSOR;
+Begin 
+OPEN resultado For
+SELECT
+  CASE
+    WHEN monto < 5000 THEN 'Menor a 5K'
+    WHEN monto BETWEEN 5000 AND 9999.99 THEN '5K - 10K'
+    WHEN monto BETWEEN 10000 AND 19999.99 THEN '10K - 20K'
+    WHEN monto BETWEEN 20000 AND 29999.99 THEN '20K - 30K'
+    WHEN monto BETWEEN 30000 AND 39999.99 THEN '30K - 40K'
+    WHEN monto BETWEEN 40000 AND 49999.99 THEN '40K - 50K'
+    ELSE 'Mayor a 50K'
+  END AS rango_monto,
+  COUNT(*) AS cantidad_creditos
+FROM creditos
+GROUP BY
+  CASE
+    WHEN monto < 5000 THEN 'Menor a 5K'
+    WHEN monto BETWEEN 5000 AND 9999.99 THEN '5K - 10K'
+    WHEN monto BETWEEN 10000 AND 19999.99 THEN '10K - 20K'
+    WHEN monto BETWEEN 20000 AND 29999.99 THEN '20K - 30K'
+    WHEN monto BETWEEN 30000 AND 39999.99 THEN '30K - 40K'
+    WHEN monto BETWEEN 40000 AND 49999.99 THEN '40K - 50K'
+    ELSE 'Mayor a 50K'
+  END
+ORDER BY rango_monto;
+RETURN resultado;
+END creditos_por_rango;
