@@ -2,6 +2,7 @@ package com.AVazquez.PruebaDeltaData.DAO;
 
 import com.AVazquez.PruebaDeltaData.ML.Credito;
 import com.AVazquez.PruebaDeltaData.ML.CreditoPorMes;
+import com.AVazquez.PruebaDeltaData.ML.CreditoRangos;
 import com.AVazquez.PruebaDeltaData.ML.Result;
 import java.sql.ResultSet;
 import java.sql.Types;
@@ -230,6 +231,46 @@ public class CreditoDAOImplementation implements ICredito {
 
         }
 
+        return result;
+    }
+
+    @Override
+    public Result RCreditos() {
+        Result result = new Result();
+        
+        try{
+            
+            jdbcTemplate.execute("{? = CALL creditos_por_rango}",
+                    (CallableStatementCallback<Integer>) callableStatement ->{
+                    callableStatement.registerOutParameter(1, Types.REF_CURSOR);
+                    callableStatement.execute();
+                    
+                    ResultSet resultSet = (ResultSet) callableStatement.getObject(1);
+                    
+                    result.objects = new ArrayList<>();
+                    while(resultSet.next()){
+                    
+                    String rango_monto = resultSet.getString("rango_monto");
+                    int cantidad_creditos = resultSet.getInt("cantidad_creditos");
+                    
+                    CreditoRangos creRangos = new CreditoRangos(rango_monto, cantidad_creditos);
+                    
+                    result.objects.add(creRangos);
+                    }
+                    
+                    
+                    return 1;
+                    });
+            
+            result.correct = true;
+        
+        }catch(Exception ex){
+        result.correct = false;
+            result.errorMesagge = ex.getLocalizedMessage();
+            result.object = null;
+            result.objects = null;
+        
+        }
         return result;
     }
 

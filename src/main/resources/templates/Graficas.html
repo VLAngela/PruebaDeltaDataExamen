@@ -18,6 +18,13 @@
                     <p>El siguiente gráfico muestra la cantidad de créditos que se han otorgado en totaly por mes.</p>
                     <canvas id="grafica" width="500" height="200"></canvas>
                 </div>
+                <br>
+                <div>
+                    <h3>Cantidad de cráditos Otorgados por rango de monto</h3>
+                    <h4>Descripción</h4>
+                    <p>El siguiente gráfico muestra la cantidad de créditos que han sido registrados por el rango del monto correspondiente..</p>
+                    <canvas id="graficaRangoC" width="500" height="200"></canvas>
+                </div>
 
 
             </div>
@@ -25,66 +32,128 @@
 
         <script>
             fetch("http://localhost:8080/Creditos/TotalCreditos")
-        .then(response => response.json())
-        .then(data => {
-            console.log('Valor recibido del backend:', data.objects);
-            mostrarGrafica(data.objects);
-        })
-        .catch(error => console.error('Error:', error));
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Valor recibido del backend:', data.objects);
+                        mostrarGrafica(data.objects);
+                    })
+                    .catch(error => console.error('Error:', error));
 
-    function mostrarGrafica(datos) {
-       
-        const labels = datos.map(item => item.mes);
-        const valores = datos.map(item => item.totalCreditos);
+            function mostrarGrafica(datos) {
 
-        
-        const colores = datos.map(item => 
-            item.mes === "TOTAL" ? "rgba(255, 99, 132, 0.7)" : "rgba(54, 162, 235, 0.7)"
-        );
+                const labels = datos.map(item => item.mes);
+                const valores = datos.map(item => item.totalCreditos);
 
-        const ctx = document.getElementById("grafica").getContext("2d");
 
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Total de Créditos',
-                    data: valores,
-                    backgroundColor: colores,
-                    borderColor: colores.map(c => c.replace("0.7", "1")),
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Cantidad de Créditos'
-                        }
+                const colores = ['rgba(255, 223, 186, 1)', 'rgba(204, 229, 255, 1)', 'rgba(204, 255, 229, 1)' 
+                    ,'rgba(204, 229, 255, 1)', 'rgba(255, 204, 229, 1)'];
+
+                const ctx = document.getElementById("grafica").getContext("2d");
+
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                                label: 'Total de Créditos',
+                                data: valores,
+                                backgroundColor: colores,
+                                borderColor: colores.map(c => c.replace("0.7", "1")),
+                                borderWidth: 1
+                            }]
                     },
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Mes'
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Cantidad de Créditos'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Mes'
+                                }
+                            }
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Créditos Otorgados por Mes'
+                            },
+                            legend: {
+                                display: false
+                            }
                         }
                     }
-                },
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Créditos Otorgados por Mes'
-                    },
-                    legend: {
-                        display: false
-                    }
-                }
+                });
             }
-        });
-    }
+            
+            
+            
+             fetch("http://localhost:8080/Creditos/CreditosPorRango")
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Valor recibido del backend:', data.objects);
+                        mostrarGraficaRangos(data.objects);
+                    })
+                    .catch(error => console.error('Error:', error));
+
+            function mostrarGraficaRangos(datos) {
+
+                const labels = datos.map(item => item.rango_monto);
+                const valores = datos.map(item => item.cantidad_creditos);
+
+                const ctx = document.getElementById("graficaRangoC").getContext("2d");
+                
+                const colores = ['rgba(255, 255, 186, 1)','rgba(186, 255, 201, 1)',
+                    'rgba(186, 225, 255, 1)', 'rgba(219, 186, 255, 1)',
+                    'rgba(255, 255, 204, 1)', 'rgba(219, 186, 255, 1)'];
+
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                                label: 'Total de Créditos',
+                                data: valores,
+                                backgroundColor: colores,
+                                borderColor: colores.map(c => c.replace("0.7", "1")),
+                                borderWidth: 1
+                            }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Cantidad de Créditos'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Mes'
+                                }
+                            }
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Cantidad de Créditos por rango'
+                            },
+                            legend: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+            }
         </script>
     </body>
 </html>

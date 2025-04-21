@@ -108,5 +108,18 @@ public class CreditosRestController {
         }
 
     }
+    
+    @GetMapping("/CreditosRango")
+    public ResponseEntity GetAllRangoCreditos(){
+    
+        Result resultRC = CreditoDAO.RCreditos();
+        
+        if(resultRC.correct){
+            return ResponseEntity.ok().body(resultRC);
+        }else{
+            return ResponseEntity.badRequest().body(resultRC);
+        }
+    
+    }
 
 }

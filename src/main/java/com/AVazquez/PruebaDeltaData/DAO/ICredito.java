@@ -14,5 +14,6 @@ public interface ICredito {
     Result GetByIdCredito(int Id);
     
     Result Tcreditos();
+    Result RCreditos();
    
 }

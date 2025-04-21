@@ -155,6 +155,20 @@ public class CreditosController {
         return ResponseEntity.ok(creditoT);
     }
     
+    @GetMapping("/CreditosPorRango")
+    @ResponseBody
+    public ResponseEntity CreditosRengo(){
+    
+    ResponseEntity<Result> response = restTemplate.exchange(baseUrl + "/CreditoService/CreditosRango", 
+            HttpMethod.GET, 
+            HttpEntity.EMPTY,
+            new ParameterizedTypeReference<Result>(){});
+    
+    Result RangoCreditos = response.getBody();
+    
+    return ResponseEntity.ok(RangoCreditos);
+    }
+    
     
     
 
